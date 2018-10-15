@@ -2,6 +2,8 @@ package com.cssc.eos.api;
 
 import com.cssc.eos.exception.EosApiError;
 import com.cssc.eos.exception.EosApiException;
+import com.cssc.eos.util.Utils;
+import com.google.gson.Gson;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -41,6 +43,7 @@ public class EosApiServiceGenerator {
                 return response.body();
             } else {
                 EosApiError apiError = getEosApiError(response);
+                System.err.println("apiError = [" + Utils.toJson(apiError) + "]");
                 throw new EosApiException(apiError);
             }
         } catch (IOException e) {

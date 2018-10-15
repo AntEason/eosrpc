@@ -29,7 +29,7 @@ public interface EosApiService {
     Call<Block> getBlock(@Body Map<String, String> requestFields);
 
     @POST("/v1/chain/get_account")
-    Call<Account> getAccount(@Body Map<String, String> requestFields);
+    Call<Map> getAccount(@Body Map<String, String> requestFields);
 
     @POST("/v1/chain/get_code")
     Call<Code> getCode(@Body Map<String, String> requestFields);

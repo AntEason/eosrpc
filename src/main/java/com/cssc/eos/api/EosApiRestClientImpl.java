@@ -41,7 +41,7 @@ public class EosApiRestClientImpl implements Eos {
     }
 
     @Override
-    public Account getAccount(String accountName) {
+    public Map getAccount(String accountName) {
         return EosApiServiceGenerator.executeSync(eosApiService.getAccount(Collections.singletonMap("account_name", accountName)));
     }
 
@@ -79,7 +79,7 @@ public class EosApiRestClientImpl implements Eos {
     @Override
     public AbiJsonToBin abiJsonToBin(String code, String action, Map<String, Object> args) {
         AbiJsonToBinRequest abiJsonToBinRequest= new AbiJsonToBinRequest(code, action, args);
-        System.out.printf("abiJsonToBinRequest :"+ Utils.toJson(abiJsonToBinRequest));
+        System.out.println("abiJsonToBinRequest :"+ Utils.toJson(abiJsonToBinRequest));
         return EosApiServiceGenerator.executeSync(eosApiService.abiJsonToBin(abiJsonToBinRequest));
     }
 

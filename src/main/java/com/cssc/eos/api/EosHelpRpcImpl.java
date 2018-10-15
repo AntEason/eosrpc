@@ -29,33 +29,33 @@ public class EosHelpRpcImpl implements EosHelpRpc {
         this.eos=eos;
     }
     @Override
-    public String transfer(String privacyKey, String from, String to, String amount, String contract,String memo) {
+    public String transfer(Map<String,String> keys, String from, String to, String amount, String contract,String memo) {
         String action = "transfer";
         Map<String, Object> params = new HashMap<>(4);
         params.put("from", from);
         params.put("to", to);
         params.put("quantity", amount);
         params.put("memo", memo);
-        return packedTransaction(privacyKey, params, from, action, contract,true );
+        return packedTransaction(keys, params, from, action, contract,true );
     }
 
     @Override
-    public String buyRam(String privacyKey, String payer, String receiver, String amount) {
+    public String buyRam(Map<String,String> keys, String payer, String receiver, String amount) {
         String action = "buyram";
         Map<String, Object> params = new HashMap<>(4);
         params.put("payer", payer);
         params.put("receiver", receiver);
         params.put("quant", amount);
-        return packedTransaction(privacyKey, params, payer, action, "eosio",true );
+        return packedTransaction(keys, params, payer, action, "eosio",true );
     }
 
     @Override
-    public String sellRam(String privacyKey, String to, String amount) {
+    public String sellRam(Map<String,String> keys, String to, String amount) {
         String action = "sellram";
         Map<String, Object> params = new HashMap<>(4);
         params.put("account", to);
         params.put("bytes", Integer.valueOf(amount));
-        return packedTransaction(privacyKey, params, to, action, "eosio",true );
+        return packedTransaction(keys, params, to, action, "eosio",true );
     }
 
     @Override
@@ -65,7 +65,7 @@ public class EosHelpRpcImpl implements EosHelpRpc {
     }
 
     @Override
-    public String createAsset(String privacyKey,String account, String asset, String eos, String fee, String transferbool) {
+    public String createAsset(Map<String,String> keys,String account, String asset, String eos, String fee, String transferbool) {
         String action = "create";
         Map<String, Object> params = new HashMap<>(4);
         params.put("issuer", account);
@@ -73,32 +73,32 @@ public class EosHelpRpcImpl implements EosHelpRpc {
         params.put("exchange_base",eos);
         params.put("fee_amount",Integer.valueOf(fee));
         params.put("open_transfer",Integer.valueOf(transferbool));
-        return packedTransaction(privacyKey, params, account, action, "bancor.token",true );
+        return packedTransaction(keys, params, account, action, "bancor.token",true );
     }
 
     @Override
-    public String exchangeBuy(String privacyKey,String amount, String eos, String asset, String feeAmont) {
+    public String exchangeBuy(Map<String,String> keys,String amount, String eos, String asset, String feeAmont) {
         String action = "buy";
         Map<String, Object> params = new HashMap<>(4);
         params.put("from", amount);
         params.put("quant", eos);
         params.put("symbol",asset);
         params.put("feeto",feeAmont);
-        return packedTransaction(privacyKey, params, amount, action, "bancor.token",true );
+        return packedTransaction(keys, params, amount, action, "bancor.token",true );
     }
 
     @Override
-    public String exchangeSell(String privacyKey,String amount, String asset, String eos, String feeAmont) {
+    public String exchangeSell(Map<String,String> keys,String amount, String asset, String eos, String feeAmont) {
         String action = "sell";
         Map<String, Object> params = new HashMap<>(4);
         params.put("from", amount);
         params.put("quant", asset);
         params.put("symbol",eos);
         params.put("feeto",feeAmont);
-        return packedTransaction(privacyKey, params, amount, action, "bancor.token",true );
+        return packedTransaction(keys, params, amount, action, "bancor.token",true );
     }
     @Override
-    public String accountAuthority(String privacyKey, String accoun, String publicKey, String code) {
+    public String accountAuthority(Map<String,String> keys, String accoun, String publicKey, String code) {
         String action = "updateauth";
         Map<String,Object> params=new HashMap<>();
         Map<String, Object> auth = new HashMap<>(4);
@@ -123,7 +123,7 @@ public class EosHelpRpcImpl implements EosHelpRpc {
         params.put("permission","active");
         params.put("parent","owner");
         params.put("auth",auth);
-        return packedTransaction(privacyKey, params, accoun, action, "eosio",false );
+        return packedTransaction(keys, params, accoun, action, "eosio",false );
     }
 
     @Override
@@ -143,9 +143,32 @@ public class EosHelpRpcImpl implements EosHelpRpc {
         return Utils.toJson(tableRow);
     }
 
-    private String packedTransaction(String privacyKey, Map<String, Object> params, String activer, String action, String contract,Boolean activeOrOwner) {
+    @Override
+    public String delegatebw(Map<String, String> keys, String form, String receiver, String assetNet, String assetCpu) {
+        String action = "delegatebw";
+        Map<String,Object> params=new HashMap<>();
+        params.put("from",form);
+        params.put("receiver",receiver);
+        params.put("stake_net_quantity",assetNet);
+        params.put("stake_cpu_quantity",assetCpu);
+        params.put("transfer",1);
+        return packedTransaction(keys, params, form, action, "eosio",true );
+    }
+
+    @Override
+    public String undelegatebw(Map<String, String> keys, String form, String receiver, String assetNet, String assetCpu) {
+        String action="undelegatebw";
+        Map<String,Object> params=new HashMap<>();
+        params.put("from",form);
+        params.put("receiver",receiver);
+        params.put("unstake_net_quantity",assetNet);
+        params.put("unstake_cpu_quantity",assetCpu);
+        return packedTransaction(keys, params, form, action, "eosio",true );
+    }
+
+    private String packedTransaction(Map<String,String> keys, Map<String, Object> params, String activer, String action, String contract,Boolean activeOrOwner) {
         ChainInfo chainInfo = eos.getChainInfo();
-        EosPrivateKey eosPrivateKey = new EosPrivateKey(privacyKey);
+
         TypeChainId chainId = new TypeChainId(chainInfo.getChainId());
         AbiJsonToBin data = eos.abiJsonToBin(contract, action, params);
 
@@ -156,17 +179,14 @@ public class EosHelpRpcImpl implements EosHelpRpc {
 
         SignedTransaction transaction =null;
         if (activeOrOwner){
-            System.out.println("active");
             transaction= createTransaction(contract, action, data.getBinargs(), getActivePermission(activer), eosChainInfo);
         }else{
-            System.out.println("owner");
             transaction= createTransaction(contract, action, data.getBinargs(), getOwnerPermission(activer), eosChainInfo);
         }
-        List<String> pubKey=new ArrayList<>();
-        pubKey.add("EOS7ibFZXpKFbeFixZwW5dKTMiyYZhkeRVKVfw3zqyMJpzh2vp98A");
-        pubKey.add("EOS6dz8fYqkmnVbYfvcDYb8pMhD6n4Zh79tvnidfRk3cjZ2x3jQrL");
-        RequiredKeys requiredKeys= eos.getRequiredKeys(transaction,pubKey);
-        System.out.println("RequiredKeys :"+Utils.toJsonByGson(requiredKeys));
+        RequiredKeys requiredKeys= eos.getRequiredKeys(transaction, new ArrayList(keys.keySet()));
+        lLogger.info("trx requiredKeys: {}", requiredKeys.getRequiredKeys().get(0));
+        System.out.println("trx requiredKeys: "+keys.get(requiredKeys.getRequiredKeys().get(0)));;
+        EosPrivateKey eosPrivateKey = new EosPrivateKey(keys.get(requiredKeys.getRequiredKeys().get(0)));
         transaction = signTransaction(transaction, eosPrivateKey, chainId);
         System.out.println("trx request: "+ Utils.toJson(transaction));
         com.cssc.eos.crypto.model.chain.PackedTransaction packedTransaction = buildTransaction(transaction);
