@@ -20,7 +20,7 @@ public interface Eos {
 
     Block getBlock(String blockNumberOrId);
 
-    Account getAccount(String accountName);
+    Map getAccount(String accountName);
 
     Code getCode(String accountName);
 

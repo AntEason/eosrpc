@@ -10,12 +10,12 @@ public class Permission {
 
     private String parent;
 
-    private List<RequiredAuth> requiredAuth;
+    private List<RequiredAuth> required_auth;
 
     public Permission(){
 
     }
-
+    @JsonProperty("perm_name")
     public String getName() {
         return name;
     }
@@ -23,7 +23,7 @@ public class Permission {
     public void setName(String name) {
         this.name = name;
     }
-
+    @JsonProperty("parent")
     public String getParent() {
         return parent;
     }
@@ -32,12 +32,11 @@ public class Permission {
         this.parent = parent;
     }
 
-    @JsonProperty("required_ath")
-    public List<RequiredAuth> getRequiredAuth() {
-        return requiredAuth;
+    public List<RequiredAuth> getRequired_auth() {
+        return required_auth;
     }
 
-    public void setRequiredAuth(List<RequiredAuth> requiredAuth) {
-        this.requiredAuth = requiredAuth;
+    public void setRequired_auth(List<RequiredAuth> required_auth) {
+        this.required_auth = required_auth;
     }
 }
