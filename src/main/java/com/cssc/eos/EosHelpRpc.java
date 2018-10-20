@@ -11,7 +11,6 @@ public interface EosHelpRpc {
     String sellRam(Map<String,String> keys, String to, String amount);
 
     String ramMarket();
-
     /**
      * 创建资产
      * @param keys 签名私钥
@@ -83,9 +82,10 @@ public interface EosHelpRpc {
      * @param receiver
      * @param assetNet
      * @param assetCpu
+     * @param transfer
      * @return
      */
-    String delegatebw(Map<String,String> keys ,String form ,String receiver,String assetNet,String assetCpu);
+    String delegatebw(Map<String,String> keys ,String form ,String receiver,String assetNet,String assetCpu,boolean transfer );
     /**
      * 收回抵押cpu net
      * @param keys
@@ -96,4 +96,27 @@ public interface EosHelpRpc {
      * @return
      */
     String undelegatebw(Map<String,String> keys ,String form ,String receiver,String assetNet,String assetCpu);
+
+    /**
+     * 开始骰子游戏
+     * @param id 订单id
+     * @param accountName 用户账号名称
+     * @param feeAccountName 手续费账户名称
+     * @param amount 押币的数量
+     * @param rollNuder 用户发送的
+     * @param seedHash 系统hash
+     * @param userSeedHash 用户hash
+     * @param createAt 时间戳
+     * @return
+     */
+    String receipt(Map<String,String> keys,Integer id,String accountName,String feeAccountName,String amount,Integer rollNuder,String seedHash,String userSeedHash,Integer createAt);
+
+    /**
+     * 开奖
+     * @param id 订单id
+     * @param seedHash 系统hash
+     * @return
+     */
+    String reveal(Map<String,String> keys,Integer id,String accountName,String seedHash);
+
 }

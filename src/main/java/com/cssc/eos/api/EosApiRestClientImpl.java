@@ -102,6 +102,7 @@ public class EosApiRestClientImpl implements Eos {
     @Override
     public RequiredKeys getRequiredKeys(SignedTransaction transaction, List<String> keys) {
         RequiredKeysRequest requiredKeysRequest= new RequiredKeysRequest(transaction, keys);
+        System.out.println("transaction = [" + Utils.toJson(requiredKeysRequest)+"]");
         return EosApiServiceGenerator.executeSync(eosApiService.getRequiredKeys(requiredKeysRequest));
     }
 

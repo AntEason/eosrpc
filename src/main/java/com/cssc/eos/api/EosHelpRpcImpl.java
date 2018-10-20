@@ -144,14 +144,14 @@ public class EosHelpRpcImpl implements EosHelpRpc {
     }
 
     @Override
-    public String delegatebw(Map<String, String> keys, String form, String receiver, String assetNet, String assetCpu) {
+    public String delegatebw(Map<String, String> keys, String form, String receiver, String assetNet, String assetCpu,boolean transfer) {
         String action = "delegatebw";
         Map<String,Object> params=new HashMap<>();
         params.put("from",form);
         params.put("receiver",receiver);
         params.put("stake_net_quantity",assetNet);
         params.put("stake_cpu_quantity",assetCpu);
-        params.put("transfer",1);
+        params.put("transfer",transfer);
         return packedTransaction(keys, params, form, action, "eosio",true );
     }
 
@@ -166,6 +166,32 @@ public class EosHelpRpcImpl implements EosHelpRpc {
         return packedTransaction(keys, params, form, action, "eosio",true );
     }
 
+    @Override
+    public String receipt(Map<String,String> keys,Integer id, String accountName, String feeAccountName, String amount, Integer rollNuder, String seedHash, String userSeedHash, Integer createAt) {
+        String action="receipt";
+        Map<String,Object> param=new HashMap<>();
+        param.put("id",id);
+        param.put("player",accountName);
+        param.put("referrer",feeAccountName);
+        param.put("amount",amount);
+        param.put("roll_under",rollNuder);
+        param.put("seed_hash",seedHash);
+        param.put("user_seed_hash",userSeedHash);
+        param.put("created_at",createAt);
+        Map<String,Object> params=new HashMap<>();
+        params.put("bet",param);
+        return packedTransaction(keys, params, accountName, action, "dicegame",true );
+    }
+
+    @Override
+    public String reveal(Map<String,String> keys,Integer id,String accountName, String seedHash) {
+        String action="reveal";
+        Map<String,Object> params=new HashMap<>();
+        params.put("id",id);
+        params.put("seed",seedHash);
+        return packedTransaction(keys, params, accountName, action, "dicegame",true );
+    }
+
     private String packedTransaction(Map<String,String> keys, Map<String, Object> params, String activer, String action, String contract,Boolean activeOrOwner) {
         ChainInfo chainInfo = eos.getChainInfo();
 
@@ -173,6 +199,7 @@ public class EosHelpRpcImpl implements EosHelpRpc {
         AbiJsonToBin data = eos.abiJsonToBin(contract, action, params);
 
         lLogger.info("data: {}", Utils.toJson(data));
+        System.out.println(Utils.toJson(data));
         EosChainInfo eosChainInfo = new EosChainInfo();
         eosChainInfo.setHeadBlockTime(chainInfo.getHeadBlockTime());
         eosChainInfo.setHeadBlockId(chainInfo.getHeadBlockId());
