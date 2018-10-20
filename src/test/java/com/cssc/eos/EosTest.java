@@ -113,4 +113,14 @@ public class EosTest
             eosHelpRpc.reveal(keys,4,
                     accountName,"7902699be42c8a8e46fbbb4501726517e86b22c56a189f7625a6da49081b2451"));
   }
+  @Test
+  public void bets(){
+    System.out.println("bets :"+
+            eosHelpRpc.bets());
+  }
+  @Test
+  public void results(){
+    System.out.println("results :"+
+            eosHelpRpc.results());
+  }
 }

@@ -119,4 +119,15 @@ public interface EosHelpRpc {
      */
     String reveal(Map<String,String> keys,Integer id,String accountName,String seedHash);
 
+    /**
+     * dicegame 未开奖查询记录
+     * @return
+     */
+    String bets();
+
+    /**
+     * dicegame 开奖结果查询
+     * @return
+     */
+    String results();
 }

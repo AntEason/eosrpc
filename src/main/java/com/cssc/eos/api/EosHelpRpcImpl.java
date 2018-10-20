@@ -192,6 +192,18 @@ public class EosHelpRpcImpl implements EosHelpRpc {
         return packedTransaction(keys, params, accountName, action, "dicegame",true );
     }
 
+    @Override
+    public String bets() {
+        TableRow tableRow= eos.getTableRows( "dicegame","dicegame","bets");
+        return Utils.toJson(tableRow);
+    }
+
+    @Override
+    public String results() {
+        TableRow tableRow= eos.getTableRows( "dicegame","dicegame","result");
+        return Utils.toJson(tableRow);
+    }
+
     private String packedTransaction(Map<String,String> keys, Map<String, Object> params, String activer, String action, String contract,Boolean activeOrOwner) {
         ChainInfo chainInfo = eos.getChainInfo();
 
